@@ -5,9 +5,6 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
-	"github.com/valyala/fasthttp"
-	"github.com/valyala/fasthttp/fasthttpproxy"
 	"io"
 	"mime/multipart"
 	"net/url"
@@ -16,6 +13,10 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/goccy/go-json"
+	"github.com/valyala/fasthttp"
+	"github.com/valyala/fasthttp/fasthttpproxy"
 )
 
 var (
@@ -23,15 +24,15 @@ var (
 
 	// 默认的content-type	form 表单
 	defaultContentType = "application/x-www-form-urlencoded"
+
 	// json格式的body
 	jsonContentType = "application/json"
+
 	// 文件上传
 	formContentType = "multipart/form-data"
 
 	EmptyUrlErr  = errors.New("empty url")
 	EmptyFileErr = errors.New("empty file")
-
-	json = jsoniter.ConfigCompatibleWithStandardLibrary
 )
 
 type Client struct {
@@ -43,7 +44,7 @@ type Client struct {
 
 func NewClientPool() sync.Pool {
 	return sync.Pool{
-		New: func() interface{} {
+		New: func() any {
 			return &Client{
 				timeout: defaultTimeDuration,
 				crt:     nil,
@@ -134,7 +135,7 @@ func (c *Client) AddBodyByte(body []byte) *Client {
 	return c
 }
 
-func (c *Client) AddBodyStruct(object interface{}) *Client {
+func (c *Client) AddBodyStruct(object any) *Client {
 	bodyByte, _ := json.Marshal(object)
 	c.opts.body = bodyByte
 	return c
@@ -194,7 +195,7 @@ func (c *Client) SendFile(url string, options ...RequestOption) (*Response, erro
 		if err != nil {
 			return nil, err
 		}
-		//不要忘记关闭打开的文件
+		// 不要忘记关闭打开的文件
 		_, err = io.Copy(fileWriter, file)
 		if err != nil {
 			_ = file.Close()
@@ -235,7 +236,7 @@ func (c *Client) call(url, method string, headers requestHeaders, body []byte) (
 			}
 		default:
 			if !strings.Contains(contentType, formContentType) && body != nil {
-				argsMap := make(map[string]interface{})
+				argsMap := make(map[string]any)
 				if err := json.Unmarshal(body, &argsMap); err != nil {
 					return nil, err
 				}
