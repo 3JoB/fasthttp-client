@@ -3,10 +3,13 @@ package fasthttp
 type (
 	Mapper map[string]string
 
-	RequestParams  struct{ Mapper }
+	RequestParams struct{ Mapper }
+
 	RequestHeaders struct{ Mapper }
+
 	RequestCookies struct{ Mapper }
-	RequestFiles   struct{ Mapper }
+
+	RequestFiles struct{ Mapper }
 )
 
 func NewParams() Mapper {

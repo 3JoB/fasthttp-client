@@ -62,7 +62,7 @@ func TestPost(t *testing.T) {
 			NewHeaders().
 				Set("header2", "header2").
 				Set("header3", "header3"),
-			//"content-type": "application/json",
+			// "content-type": "application/json",
 		).
 		AddCookie("cookie1", "cookie1").
 		AddCookies(NewCookies().
@@ -77,7 +77,6 @@ func TestPost(t *testing.T) {
 }
 
 func TestSendFile(t *testing.T) {
-
 	res, err = NewClient().
 		AddFile("a", "/Users/chuwt/Downloads/test.jpg").
 		AddFiles(

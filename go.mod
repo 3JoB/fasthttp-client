@@ -1,6 +1,6 @@
 module github.com/3JoB/fasthttp-client
 
-go 1.19
+go 1.20
 
 require (
 	github.com/goccy/go-json v0.10.0
