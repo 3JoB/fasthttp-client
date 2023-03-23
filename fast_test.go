@@ -3,6 +3,8 @@ package fasthttp
 import (
 	_ "net/http/pprof"
 	"testing"
+
+	"github.com/3JoB/unsafeConvert"
 )
 
 var (
@@ -35,7 +37,7 @@ func TestGet(t *testing.T) {
 				Set("cookie2", "cookie2")).
 		Get("http://httpbin.org/get?am=999")
 	if err == nil {
-		t.Log(string(res.Body))
+		t.Log(unsafeConvert.StringReflect(res.Body))
 	}
 	t.Log(err)
 }
@@ -43,7 +45,7 @@ func TestGet(t *testing.T) {
 func TestPost(t *testing.T) {
 	res, err = NewClient().Post("http://httpbin.org/post")
 	if err == nil {
-		t.Log(string(res.Body))
+		t.Log(unsafeConvert.StringReflect(res.Body))
 	}
 	t.Log(err)
 
@@ -71,7 +73,7 @@ func TestPost(t *testing.T) {
 		Post("http://httpbin.org/post")
 
 	if err == nil {
-		t.Log(string(res.Body))
+		t.Log(unsafeConvert.StringReflect(res.Body))
 	}
 	t.Log(err)
 }
@@ -85,7 +87,7 @@ func TestSendFile(t *testing.T) {
 		).
 		SendFile("http://httpbin.org/post")
 	if err == nil {
-		t.Log(string(res.Body))
+		t.Log(unsafeConvert.StringReflect(res.Body))
 	}
 	t.Log(err)
 }
@@ -97,7 +99,7 @@ func TestSyncPool(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(string(res.Body))
+	t.Log(unsafeConvert.StringReflect(res.Body))
 }
 
 func TestMapper(t *testing.T) {

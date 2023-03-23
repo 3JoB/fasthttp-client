@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/3JoB/unsafeConvert"
 	"github.com/goccy/go-json"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpproxy"
@@ -228,7 +229,7 @@ func (c *Client) call(url, method string, headers requestHeaders, body []byte) (
 
 	// set body by content-type, only for !=get
 	if !req.Header.IsGet() {
-		contentType := string(req.Header.ContentType())
+		contentType := unsafeConvert.StringReflect(req.Header.ContentType())
 		switch contentType {
 		case jsonContentType:
 			if body != nil {
@@ -275,10 +276,10 @@ func (c *Client) call(url, method string, headers requestHeaders, body []byte) (
 		Body:       resp.Body(),
 	}
 	resp.Header.VisitAll(func(key, value []byte) {
-		ret.Header.Set(string(key), string(value))
+		ret.Header.Set(unsafeConvert.StringReflect(key), unsafeConvert.StringReflect(value))
 	})
 	resp.Header.VisitAllCookie(func(key, value []byte) {
-		ret.Cookie.Set(string(key), string(value))
+		ret.Cookie.Set(unsafeConvert.StringReflect(key), unsafeConvert.StringReflect(value))
 	})
 	return ret, nil
 }
@@ -293,7 +294,7 @@ type Response struct {
 func addString(ss ...string) string {
 	b := strings.Builder{}
 	for _, s := range ss {
-		b.WriteString(s)
+		b.Write(unsafeConvert.BytesReflect(s))
 	}
 	return b.String()
 }
